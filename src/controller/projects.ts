@@ -39,7 +39,6 @@ export const createProject = (req: Request, res: Response) => {
 
 export const updateProject = async (req: Request, res: Response) => {
   const id = req.params.projectId;
-  console.log(req.);
   
   const updatedProject = {
     imagePath: req.body.imagePath,
