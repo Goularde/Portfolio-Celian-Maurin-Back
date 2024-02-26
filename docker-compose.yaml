@@ -22,3 +22,4 @@ services:
     command: pnpm start
     volumes:
       - ./src:/api/src
+      - ./src/uploads:/api/uploads

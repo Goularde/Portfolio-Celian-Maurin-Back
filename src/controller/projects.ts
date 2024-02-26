@@ -28,7 +28,7 @@ export const createProject = (req: Request, res: Response) => {
     // tags: req.body.tags,
   });
   // const newProject = new Project({
-    //   imagePath: "images/project-placeholder.svg",
+  //   imagePath: "images/project-placeholder.svg",
   //   title: "EBT App",
   //   description:
   //     "Une application mobile faciliant l'ajout de billets pour le site eurobilltracker.com",
@@ -39,7 +39,7 @@ export const createProject = (req: Request, res: Response) => {
 
 export const updateProject = async (req: Request, res: Response) => {
   const id = req.params.projectId;
-  
+
   const updatedProject = {
     imagePath: req.body.imagePath,
     title: req.body.title,
@@ -48,11 +48,9 @@ export const updateProject = async (req: Request, res: Response) => {
   };
   console.log(updatedProject);
   try {
-    const project = await Project.findByIdAndUpdate(
-      id,
-      updatedProject,
-      { upsert: true, returnNewDocument: true }
-    );
+    const project = await Project.findByIdAndUpdate(id, updatedProject, {
+      returnNewDocument: true,
+    });
 
     //Ternary to check if there is one or many tags
     Array.isArray(req.body.tag)
@@ -61,11 +59,9 @@ export const updateProject = async (req: Request, res: Response) => {
           console.log(tag);
         })
       : project?.tags.push(req.body.tags);
-    
   } catch {
-    res.status(400).json("Project Not Found");
+    res.status(404).json("Project Not Found");
   }
-
 };
 
 export const deleteProject = (req: Request, res: Response) => {
@@ -75,6 +71,6 @@ export const deleteProject = (req: Request, res: Response) => {
       res.status(200).json("Project deleted")
     );
   } catch {
-    res.status(400).json("Can't find project to delete");
+    res.status(404).json("Can't find project to delete");
   }
 };
