@@ -5,4 +5,5 @@ export type ProjectType = {
   title: string;
   description: string;
   tags: Types.ObjectId[];
+  image: Types.ObjectId;
 };

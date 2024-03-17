@@ -3,14 +3,17 @@ import { Request, Response } from "express";
 import { Types } from "mongoose";
 
 export const getProjects = async (req: Request, res: Response) => {
-  const projects = await Project.find().populate("tags");
+  const projects = await Project.find().populate("tags").populate("image");
+  projects
   res.json(projects);
 };
 
 export const getProject = async (req: Request, res: Response) => {
   const id = req.params.projectId;
   try {
-    const project = await Project.findById(id).populate("tags");
+    const project = await Project.findById(id)
+      .populate("tags")
+      .populate("image");
     if (project === null) {
       throw "Project not found";
     }
@@ -27,13 +30,6 @@ export const createProject = (req: Request, res: Response) => {
     description: req.body.description,
     // tags: req.body.tags,
   });
-  // const newProject = new Project({
-  //   imagePath: "images/project-placeholder.svg",
-  //   title: "EBT App",
-  //   description:
-  //     "Une application mobile faciliant l'ajout de billets pour le site eurobilltracker.com",
-  //   tags: [{ color: "346fe1", title: "ReactJS" }],
-  // });
   newProject.save().then((project) => res.json(project));
 };
 
@@ -41,24 +37,25 @@ export const updateProject = async (req: Request, res: Response) => {
   const id = req.params.projectId;
 
   const updatedProject = {
-    imagePath: req.body.imagePath,
     title: req.body.title,
     description: req.body.description,
     tags: req.body.tags,
+    image: req.body.image,
   };
-  console.log(updatedProject);
   try {
     const project = await Project.findByIdAndUpdate(id, updatedProject, {
       returnNewDocument: true,
-    });
+    })
+      .populate("tags")
+      .populate("image");
 
     //Ternary to check if there is one or many tags
     Array.isArray(req.body.tag)
       ? req.body.tags.forEach((tag: Types.ObjectId) => {
           project?.tags.push(tag);
-          console.log(tag);
         })
       : project?.tags.push(req.body.tags);
+    res.status(200).json(project);
   } catch {
     res.status(404).json("Project Not Found");
   }

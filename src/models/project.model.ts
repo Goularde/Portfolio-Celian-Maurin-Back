@@ -2,7 +2,6 @@ import { Schema, Types, model } from "mongoose";
 import { ProjectType } from "../types/ProjectType";
 
 const projectSchema = new Schema<ProjectType>({
-  imagePath: { type: String },
   title: { type: String, required: true },
   description: { type: String, required: true },
   tags: [
@@ -12,6 +11,11 @@ const projectSchema = new Schema<ProjectType>({
       required: false,
     },
   ],
+  image: [{
+    type: Types.ObjectId,
+    ref: "Image",
+    required: false,
+  }],
 });
 
 const Project = model<ProjectType>("Project", projectSchema);
